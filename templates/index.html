@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>My ToDo</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">  
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <style>
+    .center-heading {
+      text-align: center;
+      color: navy;
+      font-weight: bold;
+    }
+    .form-container {
+      background-color: navy;
+      color: white;
+      padding: 30px;
+      margin-top: 15px;
+    }
+    .table-container {
+      margin-top: 25px;
+    }
+  </style>
+</head>
+<body>
+
+    <div class="container">
+    <h2 class="center-heading">My ToDo</h2>
+    <div class="row justify-content-center">
+        <div class="col-sm-8 col-md-12 col-lg-12">
+        <form action="{% url 'create_todo' %}" method="POST" class="form-container">
+            {% csrf_token %}
+            <div class="form-group">
+            <label for="title">Title:</label>
+            <input type="text" class="form-control" id="title" placeholder="Enter title" name="title">
+            </div>
+            <div class="form-group">
+            <label for="description">Description:</label>
+            <textarea class="form-control" name="description" id="description" cols="30" rows="5"></textarea>
+            </div>
+            <button type="submit" class="btn btn-info btn-block">Submit</button>
+        </form>
+        </div>
+    </div>
+
+    <div class="table-container">
+        <table class="table table-bordered">
+        <thead>
+            <tr>
+            <th>SN</th>
+            <th>Title</th>
+            <th>Description</th>
+            <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for todo in todos %}
+            <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ todo.title }}</td>
+            <td>
+                {% if todo.description|length > 40 %}
+                {{ todo.description|slice:":100" }}...
+                {% else %}
+                {{ todo.description }}
+                {% endif %}
+            </td>
+            <td>
+                {% if todo.completed %}
+                <span class="btn btn-success">Complete</span>
+                {% else %}
+                <a href='{% url 'complete_todo' todo.id %}' class="btn btn-primary">Pending</a>
+                {% endif %}
+                <a href='{% url 'delete_todo' todo.id %}' class="btn btn-danger">Delete</a>
+            </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+        </table>
+    </div>
+    </div>
+
+</body>
+
+
+</html>
